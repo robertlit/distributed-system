@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+      containers:
+        - name: api-gateway
+          image: <region>-docker.pkg.dev/<project>/<repo>/api-gateway:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: PORT
+              value: "8080"
+            - name: USER_SERVICE_URI
+              value: user-service.default.svc.cluster.local
+            - name: USER_SERVICE_PATH
+              value: "/users"
+            - name: USER_SERVICE_TARGET_PATH
+              value: "/users"
+            - name: CONTENT_SERVICE_URI
+              value: content-service.default.svc.cluster.local
+            - name: CONTENT_SERVICE_PATH
+              value: "/content"
+            - name: CONTENT_SERVICE_TARGET_PATH
+              value: "/content"
+            - name: RECOMMENDATION_SERVICE_URI
+              value: recommendation-service.default.svc.cluster.local
+            - name: RECOMMENDATION_SERVICE_PATH
+              value: "/recommendations"
+            - name: RECOMMENDATION_SERVICE_TARGET_PATH
+              value: "/recommendations"
+

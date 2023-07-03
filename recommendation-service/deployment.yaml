@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: recommendation-service-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: recommendation-service
+  template:
+    metadata:
+      labels:
+        app: recommendation-service
+    spec:
+      containers:
+        - name: recommendation-service
+          image: <region>-docker.pkg.dev/<project>/<repo>/recommendation-service:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: PORT
+              value: "8080"
+            - name: API_GATEWAY_URI
+              value: api-gateway.default.svc.cluster.local
+

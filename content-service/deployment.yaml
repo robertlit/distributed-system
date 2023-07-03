@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: content-service-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: content-service
+  template:
+    metadata:
+      labels:
+        app: content-service
+    spec:
+      containers:
+        - name: content-service
+          image: <region>-docker.pkg.dev/<project>/<repo>/content-service:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: PORT
+              value: "8080"
+            - name: DB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: database-credentials
+                  key: db-ip
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: database-information
+                  key: content-service-db-name
+            - name: DB_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: database-information
+                  key: content-service-db-username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: database-credentials
+                  key: content-service-db-password
+

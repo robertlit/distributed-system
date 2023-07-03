@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-service
+  template:
+    metadata:
+      labels:
+        app: user-service
+    spec:
+      containers:
+        - name: user-service
+          image: <region>-docker.pkg.dev/<project>/<repo>/user-service:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: PORT
+              value: "8080"
+            - name: DB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: database-credentials
+                  key: db-ip
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: database-information
+                  key: user-service-db-name
+            - name: DB_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: database-information
+                  key: user-service-db-username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: database-credentials
+                  key: user-service-db-password
+
